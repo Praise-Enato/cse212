@@ -8,12 +8,24 @@ public static class Arrays
     /// <returns>array of doubles that are the multiples of the supplied number</returns>
     public static double[] MultiplesOf(double number, int length)
     {
-        // TODO Problem 1 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // Plan:
+        // 1. Create a new array of doubles with size equal to 'length' to hold the results.
+        // 2. Loop with an index i going from 0 up to (but not including) 'length'.
+        // 3. The k-th multiple of 'number' (where k starts at 1) is number * k.
+        //    Since i starts at 0, the value to store at position i is number * (i + 1).
+        // 4. After the loop finishes, return the filled array.
 
-        return []; // replace this return statement with your own
+        // 1. Allocate the result array.
+        double[] multiples = new double[length];
+
+        // 2-3. Fill each position with the corresponding multiple of 'number'.
+        for (int i = 0; i < length; i++)
+        {
+            multiples[i] = number * (i + 1);
+        }
+
+        // 4. Return the completed array.
+        return multiples;
     }
 
     /// <summary>
@@ -25,9 +37,36 @@ public static class Arrays
     /// </summary>
     public static void RotateListRight(List<int> data, int amount)
     {
-        // TODO Problem 2 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // Plan:
+        // Rotating a list to the right by 'amount' is the same as taking the last
+        // 'amount' items and moving them to the front, while keeping their order.
+        //
+        // Example: data = {1,2,3,4,5,6,7,8,9}, amount = 3
+        //   - The last 3 items are {7, 8, 9}.
+        //   - Move them to the front -> {7, 8, 9, 1, 2, 3, 4, 5, 6}.
+        //
+        // Step by step using List<int> range methods:
+        //   1. Calculate startIndex = data.Count - amount.
+        //      This is the position where the "tail" of length 'amount' begins.
+        //   2. Use data.GetRange(startIndex, amount) to copy the tail into a new list.
+        //   3. Use data.RemoveRange(startIndex, amount) to remove that tail from data.
+        //   4. Use data.InsertRange(0, tail) to put the tail at the front of data.
+        //   5. The original list is now rotated in place; nothing needs to be returned.
+        //
+        // Edge case: when amount == data.Count, the entire list is the tail. We
+        // remove everything, then insert it back at index 0, leaving the list
+        // unchanged — which is the correct behavior for a full rotation.
+
+        // 1. Find where the last 'amount' items begin.
+        int startIndex = data.Count - amount;
+
+        // 2. Copy out the last 'amount' items.
+        List<int> tail = data.GetRange(startIndex, amount);
+
+        // 3. Remove those items from their current position at the end of the list.
+        data.RemoveRange(startIndex, amount);
+
+        // 4. Insert the saved tail at the front of the list.
+        data.InsertRange(0, tail);
     }
 }
