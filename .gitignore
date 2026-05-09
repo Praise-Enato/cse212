@@ -366,3 +366,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Locally-generated solution file (not tracked by the course repo)
+cse212.sln
