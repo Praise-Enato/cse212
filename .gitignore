@@ -369,3 +369,4 @@ MigrationBackup/
 
 # Locally-generated solution file (not tracked by the course repo)
 cse212.sln
+*.csproj.lscache

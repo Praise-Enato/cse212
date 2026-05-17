@@ -13,7 +13,9 @@ public class PersonQueue
     /// <param name="person">The person to add</param>
     public void Enqueue(Person person)
     {
-        _queue.Insert(0, person);
+        // Add to the back of the queue. Dequeue removes from the front (index 0),
+        // so adding to the end gives correct FIFO behavior.
+        _queue.Add(person);
     }
 
     public Person Dequeue()

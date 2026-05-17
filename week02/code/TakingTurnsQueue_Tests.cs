@@ -11,7 +11,9 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3) and
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: Test FAILED. Expected "Bob" but got "Sue". PersonQueue.Enqueue
+    //   inserts at index 0 while Dequeue also removes from index 0, so the queue
+    //   behaves as a stack (LIFO) instead of FIFO. People come out in the wrong order.
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -43,7 +45,9 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3)
     // After running 5 times, add George with 3 turns.  Run until the queue is empty.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
-    // Defect(s) Found: 
+    // Defect(s) Found: Test FAILED. Expected "Bob" but got "Sue". Same root cause as
+    //   above: PersonQueue is LIFO instead of FIFO, so the turn order is wrong and a
+    //   player added midway does not slot into the back of the queue correctly.
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -85,7 +89,10 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (Forever), Sue (3)
     // Run 10 times.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: Test FAILED. Expected "Bob" but got "Sue". Two defects:
+    //   (1) PersonQueue is LIFO instead of FIFO (wrong order).
+    //   (2) GetNextPerson only re-enqueues when Turns > 1, so a person with 0 turns
+    //       (infinite) is dropped from the queue instead of being kept forever.
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var timTurns = 0;
@@ -116,7 +123,10 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Tim (Forever), Sue (3)
     // Run 10 times.
     // Expected Result: Tim, Sue, Tim, Sue, Tim, Sue, Tim, Tim, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: Test FAILED. Expected "Tim" but got "Sue". Same two defects:
+    //   (1) PersonQueue is LIFO instead of FIFO (wrong order).
+    //   (2) GetNextPerson drops a person with negative turns (infinite) because the
+    //       re-enqueue condition is Turns > 1, so infinite players do not stay forever.
     public void TestTakingTurnsQueue_ForeverNegative()
     {
         var timTurns = -3;
@@ -143,7 +153,8 @@ public class TakingTurnsQueueTests
     [TestMethod]
     // Scenario: Try to get the next person from an empty queue
     // Expected Result: Exception should be thrown with appropriate error message.
-    // Defect(s) Found: 
+    // Defect(s) Found: None. Test PASSED. GetNextPerson correctly throws
+    //   InvalidOperationException with the message "No one in the queue." when empty.
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
