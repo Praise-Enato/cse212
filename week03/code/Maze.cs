@@ -25,14 +25,23 @@ public class Maze
         _mazeMap = mazeMap;
     }
 
-    // TODO Problem 4 - ADD YOUR CODE HERE
+    // The direction array stored at each (x,y) is [left, right, up, down].
+    private const int LEFT = 0;
+    private const int RIGHT = 1;
+    private const int UP = 2;
+    private const int DOWN = 3;
+
     /// <summary>
     /// Check to see if you can move left.  If you can, then move.  If you
     /// can't move, throw an InvalidOperationException with the message "Can't go that way!".
     /// </summary>
     public void MoveLeft()
     {
-        // FILL IN CODE
+        if (!CanMove(LEFT))
+        {
+            throw new InvalidOperationException("Can't go that way!");
+        }
+        _currX -= 1;
     }
 
     /// <summary>
@@ -41,7 +50,11 @@ public class Maze
     /// </summary>
     public void MoveRight()
     {
-        // FILL IN CODE
+        if (!CanMove(RIGHT))
+        {
+            throw new InvalidOperationException("Can't go that way!");
+        }
+        _currX += 1;
     }
 
     /// <summary>
@@ -50,7 +63,11 @@ public class Maze
     /// </summary>
     public void MoveUp()
     {
-        // FILL IN CODE
+        if (!CanMove(UP))
+        {
+            throw new InvalidOperationException("Can't go that way!");
+        }
+        _currY -= 1;
     }
 
     /// <summary>
@@ -59,7 +76,23 @@ public class Maze
     /// </summary>
     public void MoveDown()
     {
-        // FILL IN CODE
+        if (!CanMove(DOWN))
+        {
+            throw new InvalidOperationException("Can't go that way!");
+        }
+        _currY += 1;
+    }
+
+    // Helper: look up the current cell in the map and check whether the
+    // requested direction is allowed. A missing cell (off the map) is
+    // treated as a wall.
+    private bool CanMove(int direction)
+    {
+        if (!_mazeMap.TryGetValue((_currX, _currY), out var moves))
+        {
+            return false;
+        }
+        return moves[direction];
     }
 
     public string GetStatus()
