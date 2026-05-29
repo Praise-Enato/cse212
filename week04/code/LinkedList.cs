@@ -32,7 +32,22 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public void InsertTail(int value)
     {
-        // TODO Problem 1
+        // Mirror of InsertHead but on the tail side.
+        Node newNode = new(value);
+
+        // If the list is empty, the new node becomes both head and tail.
+        if (_tail is null)
+        {
+            _head = newNode;
+            _tail = newNode;
+        }
+        // Otherwise, splice the new node onto the back of the list.
+        else
+        {
+            newNode.Prev = _tail;   // Connect new node back to the old tail.
+            _tail.Next = newNode;   // Connect old tail forward to the new node.
+            _tail = newNode;        // Update the tail to point to the new node.
+        }
     }
 
 
@@ -64,7 +79,20 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public void RemoveTail()
     {
-        // TODO Problem 2
+        // Mirror of RemoveHead but on the tail side.
+
+        // If the list has only one item (or is empty) clear both ends.
+        if (_head == _tail)
+        {
+            _head = null;
+            _tail = null;
+        }
+        // Otherwise, detach the last node from the second-to-last node.
+        else if (_tail is not null)
+        {
+            _tail.Prev!.Next = null;  // Drop the link from the new tail forward.
+            _tail = _tail.Prev;       // Update the tail to point to the previous node.
+        }
     }
 
     /// <summary>
@@ -108,7 +136,33 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public void Remove(int value)
     {
-        // TODO Problem 3
+        // Walk from the head looking for the first node that holds `value`.
+        Node? curr = _head;
+        while (curr is not null)
+        {
+            if (curr.Data == value)
+            {
+                // Boundary cases reuse the existing head/tail helpers.
+                if (curr == _head)
+                {
+                    RemoveHead();
+                }
+                else if (curr == _tail)
+                {
+                    RemoveTail();
+                }
+                // Middle node: stitch the neighbors directly to each other.
+                else
+                {
+                    curr.Prev!.Next = curr.Next;
+                    curr.Next!.Prev = curr.Prev;
+                }
+
+                return; // Stop after removing the first match.
+            }
+
+            curr = curr.Next;
+        }
     }
 
     /// <summary>
@@ -116,7 +170,17 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public void Replace(int oldValue, int newValue)
     {
-        // TODO Problem 4
+        // Walk the entire list and overwrite Data on every matching node.
+        // Unlike Remove, this keeps going after the first match.
+        Node? curr = _head;
+        while (curr is not null)
+        {
+            if (curr.Data == oldValue)
+            {
+                curr.Data = newValue;
+            }
+            curr = curr.Next;
+        }
     }
 
     /// <summary>
@@ -146,8 +210,14 @@ public class LinkedList : IEnumerable<int>
     /// </summary>
     public IEnumerable Reverse()
     {
-        // TODO Problem 5
-        yield return 0; // replace this line with the correct yield return statement(s)
+        // Pattern after GetEnumerator, but start at the tail and walk
+        // backwards using the Prev pointer.
+        var curr = _tail;
+        while (curr is not null)
+        {
+            yield return curr.Data;
+            curr = curr.Prev;
+        }
     }
 
     public override string ToString()
